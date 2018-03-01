@@ -3,6 +3,11 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+## NPM / Node
+node_modules
+/app/coverage/
+/app/public/sass/.sass-cache
+
 # User-specific files
 *.suo
 *.user

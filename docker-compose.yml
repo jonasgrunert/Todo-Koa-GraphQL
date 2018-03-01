@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  koa:
+    container_name: koa
+    build: ./app
+    ports:
+      - 3000:3000
+    volumes:
+      - ./app:/opt/app
+  test:
+    container_name: test
+    build: ./app
+    volumes:
+      - ./app:/opt/app
+    ports:
+      - 3001:3001
+    depends_on:
+      - koa
+    command: jest
+  couchdb:
+    container_name: couchdb
+    image: couchdb:latest
+    environment:
+      COUCHDB_USER: admin
+      COUCHDB_PASSWORD: my_admin_password
+    ports: 
+      - 5984:5984
