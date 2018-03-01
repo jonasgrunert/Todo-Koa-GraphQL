@@ -3,6 +3,23 @@ import KoaRouter from 'koa-router';
 import KoaBodyParser from 'koa-bodyparser';
 import { graphqlKoa, graphiqlKoa } from 'apollo-server-koa';
 import { makeExecutableSchema } from 'graphql-tools';
+import schemacontent from './schemacontent';
+
+const app = new Koa();
+const router = new KoaRouter();
+//TEST
+app
+  .use(KoaBodyParser())
+  .use(router.routes())
+  .use(router.allowedMethods());
+
+app.listen(3000);
+
+// Router
+router.get('/graphql', graphiqlKoa({ endpointURL: '/graphql' }));
+router.get('/graphiql', graphiqlKoa({ endpointURL: '/graphql' }));
+
+router.post('/graphql', graphqlKoa({ schema }));
 
 // GraphQL Schema
 // Some fake data
@@ -17,35 +34,10 @@ const books = [
   },
 ];
 
-// The GraphQL schema in string form
-const typeDefs = `
-  type Query { books: [Book] }
-  type Book { title: String, author: String }
-`;
-
-// The resolvers
+// declare resolvers
 const resolvers = {
   Query: { books: () => books },
 };
 
-// Put together a schema
-const schema = makeExecutableSchema({
-  typeDefs,
-  resolvers,
-});
-
-// Router
-const router = new KoaRouter();
-router
-  // GraphQL
-  .get('/graphql', graphiqlKoa({ endpointURL: '/graphql' }))
-  .post('/graphql', graphqlKoa({ schema }));
-
-const app = new Koa();
-
-app
-  .use(KoaBodyParser())
-  .use(router.routes());
-
-app.listen(3000);
-
+//build schema
+const schema = makeExecutableSchema({typeDefs = schemacontent.schemacontent, resolvers});
