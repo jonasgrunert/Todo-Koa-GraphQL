@@ -9,7 +9,7 @@ Query {
     tasks: tasks  
     task(id: ID, title: String, state: Boolean): task  
     dates: [date]  
-    date(date: Date): task  
+    date(date: Date, from: Date, to: Date): task  
     places: [place]  
     place(title: String): place  
 }  
@@ -22,7 +22,7 @@ Mutation {
 // Types  
 type category {  
     title: String  
-    tasks: [task]  
+    tasks(state: Boolean): [task]  
 }  
 type task {  
     id: ID!  
@@ -35,11 +35,11 @@ type task {
 }  
 type date {  
     date: Date  
-    tasks: [task]  
+    tasks(state: Boolean): [task]  
 }  
 type place {  
     title: String  
-    tasks: [task]  
+    tasks(state: Boolean): [task]  
 }  
   
 // Inputs  
