@@ -5,29 +5,22 @@ schema {
   
 Query {  
     categories: [category]  
-    category(id: ID, title: String): category  
+    category(title: String): category  
     tasks: tasks  
     task(id: ID, title: String, state: Boolean): task  
     dates: [date]  
-    date(id: ID, date: Date): task  
+    date(date: Date): task  
     places: [place]  
-    place(id: ID, title: String): place  
+    place(title: String): place  
 }  
   
 Mutation {  
     createTask(task: createTask): task  
     editTask(task: editTAsk): task  
-    createCategory(category: createCategory): category  
-    editCategory(category: editCategory): category  
-    createDate(date: createDate): date  
-    editDate(date: editDate): date  
-    createPlace(place: createPlace): place  
-    editPlace(place: editPlace): place  
 }  
   
 // Types  
 type category {  
-    id: ID!  
     title: String  
     tasks: [task]  
 }  
@@ -41,22 +34,15 @@ type task {
     categories: [category]  
 }  
 type date {  
-    id: ID!  
     date: Date  
     tasks: [task]  
 }  
 type place {  
-    id: ID!  
     title: String  
     tasks: [task]  
 }  
   
 // Inputs  
-  
-input editCategory {  
-    id: ID!  
-    title: String  
-}  
 input editTask {  
     id: ID!  
     title: String  
@@ -66,18 +52,6 @@ input editTask {
     place: String  
     categories: [String]  
 }  
-input editDate {  
-    id: ID!  
-    date: Date  
-}  
-input editPlace {  
-    id: ID!  
-    title: String  
-}  
-  
-input createCategory {  
-    title: String!  
-}  
 input createTask {  
     title: String!  
     state: Boolean  
@@ -85,12 +59,6 @@ input createTask {
     date: Date  
     place: String  
     categories: [String]  
-}  
-input createDate {  
-    date: Date!  
-}  
-input createPlace {  
-    title: String!  
 }  
   
 scalar Date // UNIX-formatted Date  
