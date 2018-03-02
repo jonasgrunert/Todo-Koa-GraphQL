@@ -6,8 +6,8 @@ schema {
 Query {  
     categories: [category]  
     category(title: String): category  
-    tasks: tasks  
-    task(id: ID, title: String, state: Boolean): task  
+    tasks(state: Boolean, title: State): tasks  
+    task(id: ID): task  
     dates: [date]  
     date(date: Date, from: Date, to: Date): task  
     places: [place]  
