@@ -39,7 +39,7 @@ const router = new KoaRouter();
 router
   // GraphQL
   .get('/graphql', graphiqlKoa({ endpointURL: '/graphql' }))
-  .post('/graphql', graphqlKoa({ schema }));
+  .post('/graphql', (ctx, next) => { graphqlKoa({ schema, context: ctx }); });
 
 const app = new Koa();
 
