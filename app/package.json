@@ -26,7 +26,7 @@
   },
   "scripts": {
     "build": "babel src -d lib",
-    "start": "nodemon -L --watch app/ --delay 4 --ignore node_modules/ --exec babel-node ./src/app.js",
+    "start": "nodemon -L --watch app/ --delay 10 --ignore node_modules/ --exec babel-node ./src/app.js",
     "test": "docker-compose up test"
   },
   "author": "Jonas Grunert",

@@ -1,19 +1,27 @@
+import dbConfig, { sampleData } from '../../dbconfig';
+
 const Promise = require('bluebird');
 const dbServer = require('nano')('http://admin:my_admin_password@couchdb:5984');
 
-Promise.promisifyAll(dbServer);
-
 export async function createDb(id = 'default') {
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     try {
-      dbServer.db.createAsync(id);
-      const db = dbServer.useAsync(id);
-      db.insertAsnyc(
-        {}, // view document
-        '_design/todos',
-      );
-      db.insertAsync({
-        // smaple data
+      dbServer.db.create(id, async (e, body) => {
+        if (!e) {
+          console.log('Database created');
+        } else {
+          console.log(e);
+        }
+        const db = Promise.promisifyAll(dbServer.use(id));
+        await db.insertAsync(
+          dbConfig, // view document
+          '_design/todos',
+        );
+        if (id === 'default') {
+          sampleData.forEach(async (data) => {
+            await db.insertAsync(data);
+          });
+        }
       });
       resolve();
     } catch (err) {
@@ -24,10 +32,10 @@ export async function createDb(id = 'default') {
 
 export default async function nano(ctx) {
   try {
-    dbServer.db.getAsync(ctx.state.user);
+    await dbServer.db.getAsync(ctx.state.user);
   } catch (e) {
     try {
-      createDb(ctx.state.user);
+      await createDb(ctx.state.user);
     } catch (err) {
       ctx.throw(err);
     }

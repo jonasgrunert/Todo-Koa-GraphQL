@@ -8,16 +8,8 @@ services:
       - 3000:3000
     volumes:
       - ./app:/opt/app
-  test:
-    container_name: test
-    build: ./app
-    volumes:
-      - ./app:/opt/app
-    ports:
-      - 3001:3001
     depends_on:
-      - koa
-    command: jest
+      - couchdb
   couchdb:
     container_name: couchdb
     image: couchdb:latest

@@ -4,7 +4,7 @@ import KoaBodyParser from 'koa-bodyparser';
 import { graphqlKoa, graphiqlKoa } from 'apollo-server-koa';
 import { makeExecutableSchema } from 'graphql-tools';
 import jwt from 'koa-jwt';
-import nano from './middleware/userdb';
+import nano, { createDb } from './middleware/userdb';
 
 // GraphQL Schema
 // Some fake data
@@ -50,7 +50,9 @@ app
   .use(router.routes())
   .use(router.allowedMethods());
 
+createDb();
+
 app.listen(3000);
 
 // build schema
-const schema = makeExecutableSchema({ typeDefs: schemacontent.schemacontent, resolvers: resolvercontent.resolvercontent });
+// const schema = makeExecutableSchema({ typeDefs: schemacontent.schemacontent, resolvers: resolvercontent.resolvercontent });

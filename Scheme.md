@@ -25,7 +25,7 @@ type category {
     tasks(state: Boolean): [task]  
 }  
 type task {  
-    id: ID!  
+    _id: ID!  
     title: String  
     state: Boolean  
     notes: String  
@@ -44,7 +44,7 @@ type place {
   
 // Inputs  
 input editTask {  
-    id: ID!  
+    _id: ID!  
     title: String  
     state: Boolean  
     notes: String  
@@ -61,4 +61,4 @@ input createTask {
     categories: [String]  
 }  
   
-scalar Date // UNIX-formatted Date  
+scalar Date // formatted String e.g. "2018-03-08"  

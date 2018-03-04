@@ -1,7 +1,7 @@
 FROM node:9.4
 
 # Create app directory
-RUN mkdir -p /opt/app
+RUN mkdir /opt/app
 
 # Bundle app source
 COPY . /opt/app
