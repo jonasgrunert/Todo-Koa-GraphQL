@@ -8,10 +8,13 @@ export async function createDb(id = 'default') {
     try {
       dbServer.db.createAsync(id);
       const db = dbServer.useAsync(id);
-      db.insert(
+      db.insertAsnyc(
         {}, // view document
         '_design/todos',
       );
+      db.insertAsync({
+        // smaple data
+      });
       resolve();
     } catch (err) {
       reject(err);
@@ -19,7 +22,7 @@ export async function createDb(id = 'default') {
   });
 }
 
-export default async function nano(ctx, next) {
+export default async function nano(ctx) {
   try {
     dbServer.db.getAsync(ctx.state.user);
   } catch (e) {

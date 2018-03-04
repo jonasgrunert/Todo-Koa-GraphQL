@@ -3,6 +3,8 @@ import KoaRouter from 'koa-router';
 import KoaBodyParser from 'koa-bodyparser';
 import { graphqlKoa, graphiqlKoa } from 'apollo-server-koa';
 import { makeExecutableSchema } from 'graphql-tools';
+import jwt from 'koa-jwt';
+import nano from './middleware/userdb';
 
 // GraphQL Schema
 // Some fake data
@@ -39,7 +41,7 @@ const router = new KoaRouter();
 router
   // GraphQL
   .get('/graphql', graphiqlKoa({ endpointURL: '/graphql' }))
-  .post('/graphql', (ctx, next) => { graphqlKoa({ schema, context: ctx }); });
+  .post('/graphql', jwt({ secret: 'shared-scret' }), (ctx) => { nano(ctx); }, (ctx) => { graphqlKoa({ schema, context: ctx }); });
 
 const app = new Koa();
 
