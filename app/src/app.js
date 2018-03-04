@@ -47,7 +47,10 @@ const app = new Koa();
 
 app
   .use(KoaBodyParser())
-  .use(router.routes());
+  .use(router.routes())
+  .use(router.allowedMethods());
 
 app.listen(3000);
 
+// build schema
+const schema = makeExecutableSchema({ typeDefs: schemacontent.schemacontent, resolvers: resolvercontent.resolvercontent });
