@@ -1,7 +1,8 @@
 const dbConfig = {
   "views": {
     "byDate": {
-      "map": // Sorted by date
+      // Sorted by date
+      "map": 
         function(doc){
           if(doc.date){
             //key, value
@@ -10,7 +11,8 @@ const dbConfig = {
         }
     },
     "byPlace": {
-      "map": // sorted by place
+      // sorted by place
+      "map": 
         function(doc){
           if(doc.place){
             emit(doc.place, doc)
@@ -18,7 +20,8 @@ const dbConfig = {
         }
     },
     "byCategory": {
-      "map": // sorted by category
+      // sorted by category
+      "map": 
         function(doc){
           if(doc.category && doc.category.length > 0){
             for(var i in doc.category) {
@@ -28,7 +31,8 @@ const dbConfig = {
         }
     },
     "byState": {
-      "map": // sorted by state
+      // sorted by state
+      "map": 
         function(doc){
           if(doc.state){
             emit(doc.state, doc)
@@ -36,53 +40,53 @@ const dbConfig = {
         }
     },
     "byTitle": {
-      "map": // sorted by title
-        function(doc){
-          if(doc.title){
-            emit(doc.title, doc)
-          }
+      // sorted by title
+      "map": function(doc){
+        if(doc.title){
+          emit(doc.title, doc)
         }
+      }
     },
     "byStateandTitle": {
-      "map": // sorted by state and title
-        function(doc){
-          if(doc.state && doc.title){
-            emit([doc.state, doc.title], doc)
-          }
+      // sorted by state and title
+      "map": function(doc){
+        if(doc.state && doc.title){
+          emit([doc.state, doc.title], doc)
         }
+      }
     },
     "byDateandState": {
-      "map": //sorted by date and state
-        function(doc){
-          if(doc.date && doc.state){
-            emit([doc.date, doc.state], doc)
-          }
+      // sorted by date and state
+      "map": function(doc){
+        if(doc.date && doc.state){
+          emit([doc.date, doc.state], doc)
         }
+      }
     },
     "byPlaceandState": {
-      "map": //sorted by place and state
-        function(doc){
-          if(doc.place && doc.state){
-            emit([doc.place, doc.state], doc)
-          }
+      // sorted by place and state
+      "map": function(doc){
+        if(doc.place && doc.state){
+          emit([doc.place, doc.state], doc)
         }
+      }
     },
     "byCategoryandState": {
-      "map": //sorted by category and state
-        function(doc){
-          if(doc.category && doc.state){
-            for(var i in doc.category) {
-              emit([doc.category[i], doc.state], doc);
-            }
+      //sorted by category and state
+      "map": function(doc){
+        if(doc.category && doc.state){
+          for(var i in doc.category) {
+            emit([doc.category[i], doc.state], doc);
           }
         }
+      }
     },
   }
 };
 
 export const sampleData = [
   {
-    _id: 1,
+    _id: "1",
     title: "Buying apples",
     state: true,
     notes: "big and red",
@@ -91,13 +95,13 @@ export const sampleData = [
     category: ["shopping", "fresh"],
   },
   {
-    _id: 2,
+    _id: "2",
     title: "Buying tv",
     state: false,
     category: ["shopping"],
   },
   {
-    _id: 3,
+    _id: "3",
     title: "Program graphql",
     state: true,
     date: "2018-03-08",
