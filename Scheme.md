@@ -31,7 +31,7 @@ type task {
     notes: String  
     date: date  
     place: place  
-    categories: [category]  
+    category: category  
 }  
 type date {  
     date: Date  
@@ -50,7 +50,7 @@ input editTask {
     notes: String  
     date: Date  
     place: String  
-    categories: [String]  
+    category: String  
 }  
 input createTask {  
     title: String!  
@@ -58,7 +58,7 @@ input createTask {
     notes: String  
     date: Date  
     place: String  
-    categories: [String]  
+    category: String  
 }  
   
 scalar Date // formatted String e.g. "2018-03-08"  

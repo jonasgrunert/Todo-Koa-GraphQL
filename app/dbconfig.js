@@ -1,111 +1,102 @@
 const dbConfig = {
-  "views": {
-    "byDate": {
+  views: {
+    byDate: {
       // Sorted by date
-      "map": 
-        function(doc){
-          if(doc.date){
-            //key, value
-            emit(doc.date, doc)
-          }
+      map: (doc) => {
+        if (doc.date) {
+          emit(doc.date, doc);
         }
+      },
     },
-    "byPlace": {
+    byPlace: {
       // sorted by place
-      "map": 
-        function(doc){
-          if(doc.place){
-            emit(doc.place, doc)
-          }
+      map: (doc) => {
+        if (doc.place) {
+          emit(doc.place, doc);
         }
+      },
     },
-    "byCategory": {
+    byCategory: {
       // sorted by category
-      "map": 
-        function(doc){
-          if(doc.category && doc.category.length > 0){
-            for(var i in doc.category) {
-              emit(doc.category[i], doc);
-            }
-          }
+      map: (doc) => {
+        if (doc.category && doc.category.length > 0) {
+          emit(doc.category, doc);
         }
+      },
     },
-    "byState": {
+    byState: {
       // sorted by state
-      "map": 
-        function(doc){
-          if(doc.state){
-            emit(doc.state, doc)
-          }
+      map: (doc) => {
+        if (doc.state) {
+          emit(doc.state, doc);
         }
+      },
     },
-    "byTitle": {
+    byTitle: {
       // sorted by title
-      "map": function(doc){
-        if(doc.title){
-          emit(doc.title, doc)
+      map: (doc) => {
+        if (doc.title) {
+          emit(doc.title, doc);
         }
-      }
+      },
     },
-    "byStateandTitle": {
+    byStateandTitle: {
       // sorted by state and title
-      "map": function(doc){
-        if(doc.state && doc.title){
-          emit([doc.state, doc.title], doc)
+      map: (doc) => {
+        if (doc.state && doc.title) {
+          emit([doc.state, doc.title], doc);
         }
-      }
+      },
     },
-    "byDateandState": {
+    byDateandState: {
       // sorted by date and state
-      "map": function(doc){
-        if(doc.date && doc.state){
-          emit([doc.date, doc.state], doc)
+      map: (doc) => {
+        if (doc.date && doc.state) {
+          emit([doc.date, doc.state], doc);
         }
-      }
+      },
     },
-    "byPlaceandState": {
+    byPlaceandState: {
       // sorted by place and state
-      "map": function(doc){
-        if(doc.place && doc.state){
-          emit([doc.place, doc.state], doc)
+      map: (doc) => {
+        if (doc.place && doc.state) {
+          emit([doc.place, doc.state], doc);
         }
-      }
+      },
     },
-    "byCategoryandState": {
-      //sorted by category and state
-      "map": function(doc){
-        if(doc.category && doc.state){
-          for(var i in doc.category) {
-            emit([doc.category[i], doc.state], doc);
-          }
+    byCategoryandState: {
+      // sorted by category and state
+      map: (doc) => {
+        if (doc.category && doc.state) {
+          emit([doc.category, doc.state], doc);
         }
-      }
+      },
     },
-  }
+  },
 };
 
 export const sampleData = [
   {
-    _id: "1",
-    title: "Buying apples",
+    _id: '1',
+    title: 'Buying apples',
     state: true,
-    notes: "big and red",
-    place: "Walmart",
-    date: "2018-03-10",
-    category: ["shopping", "fresh"],
+    notes: 'big and red',
+    place: 'Walmart',
+    date: '2018-03-10',
+    category: 'shopping',
   },
   {
-    _id: "2",
-    title: "Buying tv",
+    _id: '2',
+    title: 'Buying tv',
     state: false,
-    category: ["shopping"],
+    category: 'shopping',
   },
   {
-    _id: "3",
-    title: "Program graphql",
+    _id: '3',
+    title: 'Program graphql',
     state: true,
-    date: "2018-03-08",
-    category: ["university"],
+    date: '2018-03-08',
+    category: 'university',
   },
 ];
 
