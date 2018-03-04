@@ -1,7 +1,6 @@
-import dbConfig, { sampleData } from '../../dbconfig';
-
 const Promise = require('bluebird');
 const dbServer = require('nano')('http://admin:my_admin_password@couchdb:5984');
+const dbConfig = require('../../dbconfig');
 
 export async function createDb(id = 'default') {
   return new Promise(async (resolve, reject) => {
@@ -9,11 +8,11 @@ export async function createDb(id = 'default') {
       dbServer.db.create(id, async () => {
         const db = Promise.promisifyAll(dbServer.use(id));
         await db.insertAsync(
-          dbConfig, // view document
+          dbConfig.dbConfig, // view document
           '_design/todos',
         );
         if (id === 'default') {
-          sampleData.forEach(async (data) => {
+          dbConfig.sampleData.forEach(async (data) => {
             await db.insertAsync(data);
           });
         }
