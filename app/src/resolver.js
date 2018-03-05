@@ -47,6 +47,77 @@ const resolvercontent = {
       }
       throw new Error("Missing id");
     },
+    category(obj, args, context, info){
+      const db = Promise.promisifyAll(dbServer.use('default'));
+      if (args.title) {
+        return new Promise(async (resolve, reject) => {
+          try {
+            const result = await db.viewAsync('todos', 'byCategory', { 'keys': [args.title]});
+            let cb =[]
+            result.rows.forEach(element => {
+              cb.push(element.value)
+            });
+            resolve(cb);
+          } catch (err) {
+            reject(err);
+          }
+        });
+      }
+      throw new Error("Missing title")
+    },
+    place(obj, args, context, info){
+      const db = Promise.promisifyAll(dbServer.use('default'));
+      if (args.title) {
+        return new Promise(async (resolve, reject) => {
+          try {
+            const result = await db.viewAsync('todos', 'byPlace', { 'keys': [args.title]});
+            let cb =[]
+            result.rows.forEach(element => {
+              cb.push(element.value)
+            });
+            resolve(cb);
+          } catch (err) {
+            reject(err);
+          }
+        });
+      }
+      throw new Error("Missing title")
+    },
+    date(obj, args, context, info){
+      const db = Promise.promisifyAll(dbServer.use('default'));
+      if (args.date && (args.to || args.from)){
+        throw new Error("Too many parameters");
+      }
+      if (args.date) {
+        return new Promise(async (resolve, reject) => {
+          try {
+            const result = await db.viewAsync('todos', 'byDate', { 'keys': [args.date]});
+            let cb =[]
+            result.rows.forEach(element => {
+              cb.push(element.value)
+            });
+            resolve(cb);
+          } catch (err) {
+            reject(err);
+          }
+        });
+      }
+      if (args.to && args.from){
+        return new Promise(async (resolve, reject) => {
+          try {
+            const result = await db.viewAsync('todos', 'byDate', { 'startkey': args.from, 'endkey': args.to});
+            let cb =[]
+            result.rows.forEach(element => {
+              cb.push(element.value)
+            });
+            resolve(cb);
+          } catch (err) {
+            reject(err);
+          }
+        });
+      }
+      throw new Error("Missing parameters");
+    },
   },
   task: {
     sameDate(obj, args, context, info){
@@ -100,6 +171,33 @@ const resolvercontent = {
         }
       });
     },
+  },
+  Mutation: {
+    editTask(obj, args, context, info){
+      const db = Promise.promisifyAll(dbServer.use('default'));
+      return new Promise(async (resolve, reject) => {
+        try {
+          let result = await db.getAsync(args.task._id);
+          result = await db.insertAsync(Object.assign(result, args.task));
+          result = await db.getAsync(result.id);
+          resolve(result);
+        } catch (err) {
+          reject(err);
+        }
+      });
+    },
+    createTask(obj, args, context, info){
+      const db = Promise.promisifyAll(dbServer.use('default'));
+      return new Promise(async (resolve, reject) => {
+        try {
+          let result = await db.insertAsync(Object.assign({state: false},args.task));
+          result = await db.getAsync(result.id);
+          resolve(result);
+        } catch (err) {
+          reject(err);
+        }
+      });
+    }
   }
 }
 
