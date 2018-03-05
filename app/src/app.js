@@ -6,34 +6,15 @@ import { makeExecutableSchema } from 'graphql-tools';
 import jwt from 'koa-jwt';
 import nano, { createDb } from './middleware/userdb';
 
+import schemacontent from './schemacontent';
+import resolvercontent from './resolver';
+
 // GraphQL Schema
-// Some fake data
-const books = [
-  {
-    title: "Harry Potter and the Sorcerer's stone",
-    author: 'J.K. Rowling',
-  },
-  {
-    title: 'Jurassic Park',
-    author: 'Michael Crichton',
-  },
-];
-
-// The GraphQL schema in string form
-const typeDefs = `
-  type Query { books: [Book] }
-  type Book { title: String, author: String }
-`;
-
-// The resolvers
-const resolvers = {
-  Query: { books: () => books },
-};
 
 // Put together a schema
 const schema = makeExecutableSchema({
-  typeDefs,
-  resolvers,
+  typeDefs: schemacontent,
+  resolvers: resolvercontent,
 });
 
 // Router
@@ -41,7 +22,11 @@ const router = new KoaRouter();
 router
   // GraphQL
   .get('/graphql', graphiqlKoa({ endpointURL: '/graphql' }))
-  .post('/graphql', jwt({ secret: 'shared-scret' }), (ctx) => { nano(ctx); }, (ctx) => { graphqlKoa({ schema, context: ctx }); });
+  // jwt({ secret: 'shared-scret' }), (ctx) => { nano(ctx); },
+  .post('/graphql', (context, next) => graphqlKoa({
+    schema,
+    context,
+  })(context, next));
 
 const app = new Koa();
 

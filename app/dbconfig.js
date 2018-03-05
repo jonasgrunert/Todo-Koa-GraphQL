@@ -1,6 +1,11 @@
 module.exports ={
   dbConfig: {
     views: {
+      byDefault: {
+        map: function(doc){
+          emit(doc._id, doc);
+        },
+      },
       byDate: {
         // Sorted by date
         map: function(doc){

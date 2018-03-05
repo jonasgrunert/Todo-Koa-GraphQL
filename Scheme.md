@@ -6,12 +6,12 @@ schema {
 Query {  
     categories: [category]  
     category(title: String): category  
-    tasks(state: Boolean, title: State): tasks  
+    tasks(state: Boolean, title: String): [task]  
     task(id: ID): task  
     dates: [date]  
-    date(date: Date, from: Date, to: Date): task  
+    date(date: Date, from: Date, to: Date): [Date]  
     places: [place]  
-    place(title: String): place  
+    place(title: String): [place]  
 }  
   
 Mutation {  
