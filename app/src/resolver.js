@@ -6,31 +6,15 @@ const resolvercontent = {
     // args contains state, title
     tasks(obj, args, context, info){
       const db = Promise.promisifyAll(dbServer.use('default'));
-      if (args.state && args.title) {
-        return new Promise(async (resolve, reject) => {
-          try {
-            const result = await db.viewAsync('todos', 'byStateAndTitle', { 'keys': [state, title]}).rows;
-            resolve(result.rows);
-          } catch (err) {
-            reject(err);
-          }
-        });
-      }
       if (args.state) {
         return new Promise(async (resolve, reject) => {
           try {
-            const result = await db.viewAsync('todos', 'byState', { 'keys': state}).rows;
-            resolve(result.row);
-          } catch (err) {
-            reject(err);
-          }
-        });
-      }
-      if (args.title) {
-        return new Promise( async(resolve, reject) => {
-          try {
-            const result = await db.viewAsync('todos', 'byTitle', { 'keys': title})
-            resolve(result.rows);
+            const result = await db.viewAsync('todos', 'byState', { 'keys': [args.state]});
+            let cb =[]
+            result.rows.forEach(element => {
+              cb.push(element.value)
+            });
+            resolve(cb);
           } catch (err) {
             reject(err);
           }
@@ -39,12 +23,83 @@ const resolvercontent = {
       return new Promise( async (resolve, reject) => {
         try {
           const result = await db.viewAsync('todos', 'byDefault');
-          resolve(result.row);
+          let cb =[]
+          result.rows.forEach(element => {
+            cb.push(element.value)
+          });
+          resolve(cb);
         } catch (err) {
           reject(err);
         }
       });
-    }
+    },
+    task(obj, args, context, info){
+      const db = Promise.promisifyAll(dbServer.use('default'));
+      if (args.id) {
+        return new Promise(async (resolve, reject) => {
+          try {
+            const result = await db.getAsync(args.id);
+            resolve(result);
+          } catch (err) {
+            reject(err);
+          }
+        });
+      }
+      throw new Error("Missing id");
+    },
+  },
+  task: {
+    sameDate(obj, args, context, info){
+      const db = Promise.promisifyAll(dbServer.use('default'));
+      return new Promise(async (resolve, reject) => {
+        try {
+          const result = await db.viewAsync('todos', 'byDate', { 'keys': [obj.date] });
+          let cb =[]
+          result.rows.forEach(element => {
+            if (obj._id !== element.value._id) {
+              cb.push(element.value)
+            }
+          });
+          resolve(cb);
+        } catch (err) {
+          reject(err);
+        }
+      });
+    },
+    samePlace(obj, args, context, info){
+      const db = Promise.promisifyAll(dbServer.use('default'));
+      return new Promise(async (resolve, reject) => {
+        try {
+          const result = await db.viewAsync('todos', 'byPlace', { 'keys': [obj.place] });
+          let cb =[]
+          result.rows.forEach(element => {
+            if (obj._id !== element.value._id) {
+              cb.push(element.value)
+            }
+          });
+          resolve(cb);
+        } catch (err) {
+          reject(err);
+        }
+      });
+    },
+    sameCategory(obj, args, context, info){
+      const db = Promise.promisifyAll(dbServer.use('default'));
+      return new Promise(async (resolve, reject) => {
+        try {
+          const result = await db.viewAsync('todos', 'byCategory', { 'keys': [obj.category] });
+          let cb =[]
+          result.rows.forEach(element => {
+            if (obj._id !== element.value._id) {
+              cb.push(element.value)
+            }
+          });
+          resolve(cb);
+        } catch (err) {
+          reject(err);
+        }
+      });
+    },
   }
 }
 

@@ -1,4 +1,4 @@
-module.exports ={
+module.exports = {
   dbConfig: {
     views: {
       byDefault: {
@@ -35,46 +35,6 @@ module.exports ={
         map: function(doc){
           if (doc.state) {
             emit(doc.state, doc);
-          }
-        },
-      },
-      byTitle: {
-        // sorted by title
-        map: function(doc){
-          if (doc.title) {
-            emit(doc.title, doc);
-          }
-        },
-      },
-      byStateandTitle: {
-        // sorted by state and title
-        map: function(doc){
-          if (doc.state && doc.title) {
-            emit([doc.state, doc.title], doc);
-          }
-        },
-      },
-      byDateandState: {
-        // sorted by date and state
-        map: function(doc){
-          if (doc.date && doc.state) {
-            emit([doc.date, doc.state], doc);
-          }
-        },
-      },
-      byPlaceandState: {
-        // sorted by place and state
-        map: function(doc){
-          if (doc.place && doc.state) {
-            emit([doc.place, doc.state], doc);
-          }
-        },
-      },
-      byCategoryandState: {
-        // sorted by category and state
-        map: function(doc){
-          if (doc.category && doc.state) {
-            emit([doc.category, doc.state], doc);
           }
         },
       },
