@@ -4,8 +4,9 @@ import KoaBodyParser from 'koa-bodyparser';
 import { graphqlKoa, graphiqlKoa } from 'apollo-server-koa';
 import { makeExecutableSchema } from 'graphql-tools';
 import jwt from 'koa-jwt';
-import nano, { createDb } from './middleware/userdb';
+import jwksRsa from 'jwks-rsa';
 
+import nano, { createDb } from './middleware/userdb';
 import schemacontent from './schemacontent';
 import resolvercontent from './resolver';
 
@@ -21,13 +22,36 @@ const schema = makeExecutableSchema({
 const router = new KoaRouter();
 router
   // GraphQL
-  .get('/graphql', graphiqlKoa({ endpointURL: '/graphql' }))
-  // jwt({ secret: 'shared-scret' }), (ctx) => { nano(ctx); },
-  .post('/graphql', (context, next) => graphqlKoa({
+  .get('/graphql', graphiqlKoa({ endpointURL: '/graphql'}))
+  .post('/graphql', jwt({
+    secret: jwksRsa.koaJwtSecret({
+      cache: true,
+      rateLimit: true,
+      jwksRequestsPerMinute: 2,
+      jwksUri: 'https://lukasboehme.com:8443/auth/realms/todo/protocol/openid-connect/certs',
+    }),
+    issuer: 'https://lukasboehme.com:8443/auth/realms/todo',
+    audience: 'app',
+    algorithms: [ 'RS256' ],
+    passthrough: true,
+    debug: true, 
+  }), (ctx, next) => nano(ctx, next), (ctx, next) => graphqlKoa({
     schema,
-    context,
-  })(context, next));
-
+    context: ctx,
+  })(ctx, next))
+  .post('/token', jwt({
+    secret: jwksRsa.koaJwtSecret({
+      cache: true,
+      rateLimit: true,
+      jwksRequestsPerMinute: 2,
+      jwksUri: 'https://lukasboehme.com:8443/auth/realms/todo/protocol/openid-connect/certs',
+    }),
+    issuer: 'https://lukasboehme.com:8443/auth/realms/todo',
+    audience: 'app',
+    algorithms: [ 'RS256' ],
+    passthrough: false,
+    debug: true, 
+  }), (ctx, next) => nano(ctx, next), (ctx) => {ctx.body = ctx.state});
 const app = new Koa();
 
 app
@@ -38,6 +62,3 @@ app
 createDb();
 
 app.listen(3000);
-
-// build schema
-// const schema = makeExecutableSchema({ typeDefs: schemacontent.schemacontent, resolvers: resolvercontent.resolvercontent });

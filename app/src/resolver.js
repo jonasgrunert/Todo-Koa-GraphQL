@@ -5,7 +5,7 @@ const resolvercontent = {
   Query: {
     // args contains state, title
     tasks(obj, args, context, info){
-      const db = Promise.promisifyAll(dbServer.use('default'));
+      const db = Promise.promisifyAll(dbServer.use(context.state.user.sub));
       if (args.state) {
         return new Promise(async (resolve, reject) => {
           try {
@@ -34,7 +34,7 @@ const resolvercontent = {
       });
     },
     task(obj, args, context, info){
-      const db = Promise.promisifyAll(dbServer.use('default'));
+      const db = Promise.promisifyAll(dbServer.use(context.state.user.sub));
       if (args.id) {
         return new Promise(async (resolve, reject) => {
           try {
@@ -48,7 +48,7 @@ const resolvercontent = {
       throw new Error("Missing id");
     },
     category(obj, args, context, info){
-      const db = Promise.promisifyAll(dbServer.use('default'));
+      const db = Promise.promisifyAll(dbServer.use(context.state.user.sub));
       if (args.title) {
         return new Promise(async (resolve, reject) => {
           try {
@@ -66,7 +66,7 @@ const resolvercontent = {
       throw new Error("Missing title")
     },
     place(obj, args, context, info){
-      const db = Promise.promisifyAll(dbServer.use('default'));
+      const db = Promise.promisifyAll(dbServer.use(context.state.user.sub));
       if (args.title) {
         return new Promise(async (resolve, reject) => {
           try {
@@ -84,7 +84,7 @@ const resolvercontent = {
       throw new Error("Missing title")
     },
     date(obj, args, context, info){
-      const db = Promise.promisifyAll(dbServer.use('default'));
+      const db = Promise.promisifyAll(dbServer.use(context.state.user.sub));
       if (args.date && (args.to || args.from)){
         throw new Error("Too many parameters");
       }
@@ -121,7 +121,7 @@ const resolvercontent = {
   },
   task: {
     sameDate(obj, args, context, info){
-      const db = Promise.promisifyAll(dbServer.use('default'));
+      const db = Promise.promisifyAll(dbServer.use(context.state.user.sub));
       return new Promise(async (resolve, reject) => {
         try {
           const result = await db.viewAsync('todos', 'byDate', { 'keys': [obj.date] });
@@ -138,7 +138,7 @@ const resolvercontent = {
       });
     },
     samePlace(obj, args, context, info){
-      const db = Promise.promisifyAll(dbServer.use('default'));
+      const db = Promise.promisifyAll(dbServer.use(context.state.user.sub));
       return new Promise(async (resolve, reject) => {
         try {
           const result = await db.viewAsync('todos', 'byPlace', { 'keys': [obj.place] });
@@ -155,7 +155,7 @@ const resolvercontent = {
       });
     },
     sameCategory(obj, args, context, info){
-      const db = Promise.promisifyAll(dbServer.use('default'));
+      const db = Promise.promisifyAll(dbServer.use(context.state.user.sub));
       return new Promise(async (resolve, reject) => {
         try {
           const result = await db.viewAsync('todos', 'byCategory', { 'keys': [obj.category] });
@@ -174,7 +174,7 @@ const resolvercontent = {
   },
   Mutation: {
     editTask(obj, args, context, info){
-      const db = Promise.promisifyAll(dbServer.use('default'));
+      const db = Promise.promisifyAll(dbServer.use(context.state.user.sub));
       return new Promise(async (resolve, reject) => {
         try {
           let result = await db.getAsync(args.task._id);
@@ -187,7 +187,7 @@ const resolvercontent = {
       });
     },
     createTask(obj, args, context, info){
-      const db = Promise.promisifyAll(dbServer.use('default'));
+      const db = Promise.promisifyAll(dbServer.use(context.state.user.sub));
       return new Promise(async (resolve, reject) => {
         try {
           let result = await db.insertAsync(Object.assign({state: false},args.task));
