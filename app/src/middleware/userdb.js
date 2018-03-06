@@ -1,6 +1,6 @@
 const Promise = require('bluebird');
 const dbServer = require('nano')('http://admin:my_admin_password@couchdb:5984');
-const dbConfig = require('../../dbconfig');
+const dbConfig = require('../dbconfig');
 
 export async function createDb(id = 'default') {
   try {

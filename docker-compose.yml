@@ -8,8 +8,11 @@ services:
       - 3000:3000
     volumes:
       - ./app:/opt/app
+      - ${CERTPATH}:/opt/app/certs
     depends_on:
       - couchdb
+    environment:
+      - mode=$MODE
   couchdb:
     container_name: couchdb
     image: couchdb:1.7.1
