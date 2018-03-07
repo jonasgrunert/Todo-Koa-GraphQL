@@ -12,7 +12,7 @@ services:
     depends_on:
       - couchdb
     environment:
-      - mode=$MODE
+      - mode=${MODE}
   couchdb:
     container_name: couchdb
     image: couchdb:1.7.1

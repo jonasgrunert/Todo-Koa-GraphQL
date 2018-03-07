@@ -59,7 +59,7 @@ router
 
 createDb();
 
-if (process.env.mode === "production"){
+if (process.env.mode == "production") {
   const app = new Koa();
   app
     .use(ssl({ port: 3001 }))
@@ -67,10 +67,12 @@ if (process.env.mode === "production"){
     .use(router.routes())
     .use(router.allowedMethods());
 
-  var options = {
+  const options = {
     key: fs.readFileSync('../../certs/cert.pem'),
     cert: fs.readFileSync('../../certs/privkey.pem')
-  }
+  };
+
+  console.log("HTTPS enabled");
 
   http.createServer(app.callback()).listen(3000);
   https.createServer(options, app.callback()).listen(3001);

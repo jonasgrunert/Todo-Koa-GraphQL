@@ -186,10 +186,14 @@ const resolvercontent = {
       const db = Promise.promisifyAll(dbServer.use(dbAddress));
       return new Promise(async (resolve, reject) => {
         try {
-          let result = await db.getAsync(args.task._id);
-          result = await db.insertAsync(Object.assign(result, args.task));
-          result = await db.getAsync(result.id);
-          resolve(result);
+          if (args.task_id){
+            let result = await db.getAsync(args.task._id);
+            result = await db.insertAsync(Object.assign(result, args.task));
+            result = await db.getAsync(result.id);
+            resolve(result);
+          } else {
+            reject(new Error("No _id provided"));
+          }
         } catch (err) {
           reject(err);
         }
@@ -200,9 +204,13 @@ const resolvercontent = {
       const db = Promise.promisifyAll(dbServer.use(dbAddress));
       return new Promise(async (resolve, reject) => {
         try {
-          let result = await db.insertAsync(Object.assign({state: false},args.task));
-          result = await db.getAsync(result.id);
-          resolve(result);
+          if (args.task.title){
+            let result = await db.insertAsync(Object.assign({state: false},args.task));
+            result = await db.getAsync(result.id);
+            resolve(result);
+          } else {
+            reject(new Error("No title provided"))
+          }
         } catch (err) {
           reject(err);
         }
