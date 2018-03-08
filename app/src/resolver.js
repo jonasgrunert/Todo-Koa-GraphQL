@@ -1,6 +1,23 @@
 const Promise = require('bluebird');
 const dbServer = require('nano')('http://admin:my_admin_password@couchdb:5984');
 
+const retrieveData = retrieve => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const result = await retrieve();
+      let cb =[];
+      result.rows.forEach(element => {
+        cb.push(element.value)
+      });
+      resolve(cb);
+    } catch (err) {
+      reject(err);
+    }
+  });
+}
+
+//db.viewAsync('todos', 'byDefault')
+
 const resolvercontent = {
   Query: {
     // args contains state, title
@@ -8,31 +25,9 @@ const resolvercontent = {
       const dbAddress = ((context.state.user.sub === 'default') ? 'default' : 'u'+context.state.user.sub);
       const db = Promise.promisifyAll(dbServer.use(dbAddress));
       if (args.state) {
-        return new Promise(async (resolve, reject) => {
-          try {
-            const result = await db.viewAsync('todos', 'byState', { 'keys': [args.state]});
-            let cb =[]
-            result.rows.forEach(element => {
-              cb.push(element.value)
-            });
-            resolve(cb);
-          } catch (err) {
-            reject(err);
-          }
-        });
+        return retrieveData(() => {return db.viewAsync('todos', 'byState', { 'keys': [args.state]})});
       }
-      return new Promise( async (resolve, reject) => {
-        try {
-          const result = await db.viewAsync('todos', 'byDefault');
-          let cb =[]
-          result.rows.forEach(element => {
-            cb.push(element.value)
-          });
-          resolve(cb);
-        } catch (err) {
-          reject(err);
-        }
-      });
+      return retrieveData(() => {return db.viewAsync('todos', 'byDefault')});
     },
     task(obj, args, context, info){
       const dbAddress = ((context.state.user.sub === 'default') ? 'default' : 'u'+context.state.user.sub);
@@ -47,137 +42,54 @@ const resolvercontent = {
           }
         });
       }
-      throw new Error("Missing id");
+      throw new Error("Missing id ast field task");
     },
     category(obj, args, context, info){
       const dbAddress = ((context.state.user.sub === 'default') ? 'default' : 'u'+context.state.user.sub);
       const db = Promise.promisifyAll(dbServer.use(dbAddress));
       if (args.title) {
-        return new Promise(async (resolve, reject) => {
-          try {
-            const result = await db.viewAsync('todos', 'byCategory', { 'keys': [args.title]});
-            let cb =[]
-            result.rows.forEach(element => {
-              cb.push(element.value)
-            });
-            resolve(cb);
-          } catch (err) {
-            reject(err);
-          }
-        });
+        return retrieveData(() => {return db.viewAsync('todos', 'byCategory', { 'keys': [args.title]})});
       }
-      throw new Error("Missing title")
+      throw new Error("Missing title at field category")
     },
     place(obj, args, context, info){
       const dbAddress = ((context.state.user.sub === 'default') ? 'default' : 'u'+context.state.user.sub);
       const db = Promise.promisifyAll(dbServer.use(dbAddress));
       if (args.title) {
-        return new Promise(async (resolve, reject) => {
-          try {
-            const result = await db.viewAsync('todos', 'byPlace', { 'keys': [args.title]});
-            let cb =[]
-            result.rows.forEach(element => {
-              cb.push(element.value)
-            });
-            resolve(cb);
-          } catch (err) {
-            reject(err);
-          }
-        });
+        return retrieveData(() =>{return db.viewAsync('todos', 'byPlace', { 'keys': [args.title]})});
       }
-      throw new Error("Missing title")
+      throw new Error("Missing title at field place")
     },
     date(obj, args, context, info){
       const dbAddress = ((context.state.user.sub === 'default') ? 'default' : 'u'+context.state.user.sub);
       const db = Promise.promisifyAll(dbServer.use(dbAddress));
       if (args.date && (args.to || args.from)){
-        throw new Error("Too many parameters");
+        throw new Error("Too many parameters for field date");
       }
       if (args.date) {
-        return new Promise(async (resolve, reject) => {
-          try {
-            const result = await db.viewAsync('todos', 'byDate', { 'keys': [args.date]});
-            let cb =[]
-            result.rows.forEach(element => {
-              cb.push(element.value)
-            });
-            resolve(cb);
-          } catch (err) {
-            reject(err);
-          }
-        });
+        return retrieveData(()=> {return db.viewAsync('todos', 'byDate', { 'keys': [args.date]})});
       }
       if (args.to && args.from){
-        return new Promise(async (resolve, reject) => {
-          try {
-            const result = await db.viewAsync('todos', 'byDate', { 'startkey': args.from, 'endkey': args.to});
-            let cb =[]
-            result.rows.forEach(element => {
-              cb.push(element.value)
-            });
-            resolve(cb);
-          } catch (err) {
-            reject(err);
-          }
-        });
+        return retrieveData(() => {return db.viewAsync('todos', 'byDate', { 'startkey': args.from, 'endkey': args.to})});
       }
-      throw new Error("Missing parameters");
+      throw new Error("Missing parameters for field date");
     },
   },
   task: {
     sameDate(obj, args, context, info){
       const dbAddress = ((context.state.user.sub === 'default') ? 'default' : 'u'+context.state.user.sub);
       const db = Promise.promisifyAll(dbServer.use(dbAddress));
-      return new Promise(async (resolve, reject) => {
-        try {
-          const result = await db.viewAsync('todos', 'byDate', { 'keys': [obj.date] });
-          let cb =[]
-          result.rows.forEach(element => {
-            if (obj._id !== element.value._id) {
-              cb.push(element.value)
-            }
-          });
-          resolve(cb);
-        } catch (err) {
-          reject(err);
-        }
-      });
+      return retrieveData(() => {return db.viewAsync('todos', 'byDate', { 'keys': [obj.date] })});
     },
     samePlace(obj, args, context, info){
       const dbAddress = ((context.state.user.sub === 'default') ? 'default' : 'u'+context.state.user.sub);
       const db = Promise.promisifyAll(dbServer.use(dbAddress));
-      return new Promise(async (resolve, reject) => {
-        try {
-          const result = await db.viewAsync('todos', 'byPlace', { 'keys': [obj.place] });
-          let cb =[]
-          result.rows.forEach(element => {
-            if (obj._id !== element.value._id) {
-              cb.push(element.value)
-            }
-          });
-          resolve(cb);
-        } catch (err) {
-          reject(err);
-        }
-      });
+      return retrieveData(() =>{return db.viewAsync('todos', 'byPlace', { 'keys': [obj.place] })});
     },
     sameCategory(obj, args, context, info){
       const dbAddress = ((context.state.user.sub === 'default') ? 'default' : 'u'+context.state.user.sub);
       const db = Promise.promisifyAll(dbServer.use(dbAddress));
-      return new Promise(async (resolve, reject) => {
-        try {
-          const result = await db.viewAsync('todos', 'byCategory', { 'keys': [obj.category] });
-          let cb =[]
-          result.rows.forEach(element => {
-            if (obj._id !== element.value._id) {
-              cb.push(element.value)
-            }
-          });
-          resolve(cb);
-        } catch (err) {
-          reject(err);
-        }
-      });
+      return retrieveData(() => {return db.viewAsync('todos', 'byCategory', { 'keys': [obj.category] })});
     },
   },
   Mutation: {
@@ -186,13 +98,13 @@ const resolvercontent = {
       const db = Promise.promisifyAll(dbServer.use(dbAddress));
       return new Promise(async (resolve, reject) => {
         try {
-          if (args.task_id){
+          if (args.task._id){
             let result = await db.getAsync(args.task._id);
             result = await db.insertAsync(Object.assign(result, args.task));
             result = await db.getAsync(result.id);
             resolve(result);
           } else {
-            reject(new Error("No _id provided"));
+            reject(new Error("No _id provided in input object task at field editTask"));
           }
         } catch (err) {
           reject(err);
@@ -204,12 +116,16 @@ const resolvercontent = {
       const db = Promise.promisifyAll(dbServer.use(dbAddress));
       return new Promise(async (resolve, reject) => {
         try {
-          if (args.task.title){
+          if (args.task.title && args.task._id === undefined){
             let result = await db.insertAsync(Object.assign({state: false},args.task));
             result = await db.getAsync(result.id);
             resolve(result);
           } else {
-            reject(new Error("No title provided"))
+            if(args.task.title === undefinded){
+              reject(new Error("No title provided in input object task at field createTask"));
+            } else {
+              reject(new Error("Must not provid _id in input object task at field createTask"));
+            }
           }
         } catch (err) {
           reject(err);
