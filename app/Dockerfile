@@ -5,6 +5,7 @@ RUN mkdir /opt/app
 
 # Bundle app source
 COPY . /opt/app
+COPY ${CERTPATH} /opt/certs
 
 WORKDIR /opt/app
 

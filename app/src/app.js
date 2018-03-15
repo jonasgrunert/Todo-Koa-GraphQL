@@ -65,8 +65,8 @@ if (process.env.mode === 'production') {
     .use(router.allowedMethods());
 
   const options = {
-    key: fs.readFileSync('../../certs/cert.pem'),
-    cert: fs.readFileSync('../../certs/privkey.pem')
+    key: fs.readFileSync('../certs/cert.pem'),
+    cert: fs.readFileSync('../certs/privkey.pem'),
   };
 
   http.createServer(app.callback()).listen(3000);
