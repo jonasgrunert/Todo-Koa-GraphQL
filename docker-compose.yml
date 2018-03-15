@@ -13,6 +13,7 @@ services:
       - couchdb
     environment:
       - mode=${MODE}
+      - CERTPACZH=${CERTPATH}
   couchdb:
     container_name: couchdb
     image: couchdb:1.7.1
