@@ -16,6 +16,23 @@ const retrieveData = retrieve => {
   });
 }
 
+const retrieveDataUnlessSame = (retrieve, obj) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const result = await retrieve();
+      let cb =[];
+      result.rows.forEach(element => {
+        if(obj._id !== element.value._id){
+          cb.push(element.value)
+        }
+      });
+      resolve(cb);
+    } catch (err) {
+      reject(err);
+    }
+  });
+}
+
 //db.viewAsync('todos', 'byDefault')
 
 const resolvercontent = {
@@ -79,17 +96,17 @@ const resolvercontent = {
     sameDate(obj, args, context, info){
       const dbAddress = ((context.state.user.sub === 'default') ? 'default' : 'u'+context.state.user.sub);
       const db = Promise.promisifyAll(dbServer.use(dbAddress));
-      return retrieveData(() => {return db.viewAsync('todos', 'byDate', { 'keys': [obj.date] })});
+      return retrieveDataUnlessSame(() => {return db.viewAsync('todos', 'byDate', { 'keys': [obj.date] })}, obj);
     },
     samePlace(obj, args, context, info){
       const dbAddress = ((context.state.user.sub === 'default') ? 'default' : 'u'+context.state.user.sub);
       const db = Promise.promisifyAll(dbServer.use(dbAddress));
-      return retrieveData(() =>{return db.viewAsync('todos', 'byPlace', { 'keys': [obj.place] })});
+      return retrieveDataUnlessSame(() =>{return db.viewAsync('todos', 'byPlace', { 'keys': [obj.place] })}, obj);
     },
     sameCategory(obj, args, context, info){
       const dbAddress = ((context.state.user.sub === 'default') ? 'default' : 'u'+context.state.user.sub);
       const db = Promise.promisifyAll(dbServer.use(dbAddress));
-      return retrieveData(() => {return db.viewAsync('todos', 'byCategory', { 'keys': [obj.category] })});
+      return retrieveDataUnlessSame(() => {return db.viewAsync('todos', 'byCategory', { 'keys': [obj.category] })}, obj);
     },
   },
   Mutation: {
