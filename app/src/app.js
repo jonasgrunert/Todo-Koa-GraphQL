@@ -9,6 +9,7 @@ import ssl from 'koa-sslify';
 import http from 'http';
 import https from 'https';
 import fs from 'fs';
+import cors from 'koa-cors';
 
 import nano, { createDb } from './middleware/userdb';
 import schemacontent from './schemacontent';
@@ -74,6 +75,7 @@ if (process.env.mode === 'production') {
 } else {
   const app = new Koa();
   app
+    .use(cors())
     .use(KoaBodyParser())
     .use(router.routes())
     .use(router.allowedMethods());
