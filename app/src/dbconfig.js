@@ -1,14 +1,16 @@
+/* eslint-disable */
+
 module.exports = {
   dbConfig: {
     views: {
       byDefault: {
-        map: function(doc){
+        map: function(doc) {
           emit(doc._id, doc);
         },
       },
       byDate: {
         // Sorted by date
-        map: function(doc){
+        map: function(doc) {
           if (doc.date) {
             emit(doc.date, doc);
           }
@@ -16,7 +18,7 @@ module.exports = {
       },
       byPlace: {
         // sorted by place
-        map: function(doc){
+        map: function(doc) {
           if (doc.place) {
             emit(doc.place, doc);
           }
@@ -24,7 +26,7 @@ module.exports = {
       },
       byCategory: {
         // sorted by category
-        map: function(doc){
+        map: function(doc) {
           if (doc.category && doc.category.length > 0) {
             emit(doc.category, doc);
           }
@@ -32,7 +34,7 @@ module.exports = {
       },
       byState: {
         // sorted by state
-        map: function(doc){
+        map: function(doc) {
           if (doc.state) {
             emit(doc.state, doc);
           }
@@ -65,4 +67,3 @@ module.exports = {
     },
   ],
 };
-

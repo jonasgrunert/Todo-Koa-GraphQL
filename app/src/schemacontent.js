@@ -3,19 +3,22 @@
 
 const schemacontent = ` 
     type Query {    
-        category(title: String): [task]  
-        tasks(state: Boolean): [task]  
-        task(id: ID): task  
-        date(date: Date, from: Date, to: Date): [task]
-        place(title: String): [task] 
+        category(title: String): [Task]  
+        tasks(state: Boolean, date: Date, category: String, place: String): [Task]  
+        task(id: ID): Task  
+        date(date: Date, from: Date, to: Date): [Task]
+        place(title: String): [Task]
+        categories: [Group]
+        dates: [Group]
+        places: [Group]
     }  
     
     type Mutation {  
-        createTask(task: createTask): task  
-        editTask(task: editTask): task  
+        createTask(task: createTask): Task  
+        editTask(task: editTask): Task  
     }  
       
-    type task {  
+    type Task {  
         _id: ID!  
         title: String  
         state: Boolean  
@@ -23,10 +26,15 @@ const schemacontent = `
         date: Date  
         place: String  
         category: String
-        sameDate: [task]
-        samePlace: [task]
-        sameCategory: [task]  
-    }    
+        sameDate: [Task]
+        samePlace: [Task]
+        sameCategory: [Task]  
+    }
+    
+    type Group {
+        key: String
+        count: Int
+    }
       
     input editTask {  
         _id: ID!  

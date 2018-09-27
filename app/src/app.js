@@ -33,7 +33,7 @@ const jwtConfig = {
     jwksUri: keycloakURL + jwksSuffix,
   }),
   issuer: keycloakURL,
-  audience: 'app',
+  audience: 'images, webapp, apigateway',
   algorithms: ['RS256'],
 };
 
@@ -42,18 +42,30 @@ const router = new KoaRouter();
 router
   // GraphQL
   .get('/graphql', graphiqlKoa({ endpointURL: '/graphql' }))
-  .post('/graphql', jwt({
-    ...jwtConfig,
-    passthrough: true,
-  }), (ctx, next) => nano(ctx, next), (ctx, next) => graphqlKoa({
-    schema,
-    context: ctx,
-  })(ctx, next))
-  .post('/token', jwt({
-    ...jwtConfig,
-    debug: true,
-  }), (ctx, next) => nano(ctx, next), (ctx) => { ctx.body = ctx.state; });
-
+  .post(
+    '/graphql',
+    jwt({
+      ...jwtConfig,
+      passthrough: true,
+    }),
+    (ctx, next) => nano(ctx, next),
+    (ctx, next) =>
+      graphqlKoa({
+        schema,
+        context: ctx,
+      })(ctx, next),
+  )
+  .post(
+    '/token',
+    jwt({
+      ...jwtConfig,
+      debug: true,
+    }),
+    (ctx, next) => nano(ctx, next),
+    (ctx) => {
+      ctx.body = ctx.state;
+    },
+  );
 
 createDb();
 
@@ -81,4 +93,3 @@ if (process.env.mode === 'production') {
     .use(router.allowedMethods());
   app.listen(3000);
 }
-
